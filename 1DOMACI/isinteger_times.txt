@@ -1,0 +1,13 @@
+cpp
+
+real    0m0.025s
+user    0m0.021s
+sys     0m0.004s
+
+python
+
+real    0m0.113s
+user    0m0.409s
+sys     0m0.818s
+
+MATRIX_DIM = 1024
