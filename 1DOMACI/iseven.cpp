@@ -5,12 +5,13 @@
 #include <cmath>
 
 #define MATRIX_DIM 1024
+#define PRINTRESULTS
 
 void iseven (int* matrix[], bool* results[]) {
     // Loop order is important when matrices get big.
     for (int j = 0; j < MATRIX_DIM; j++)
         for (int i = 0; i < MATRIX_DIM; i++)
-            results[j][i] = (matrix[j][i] & 1) == 0;
+            results[j][i] = !(matrix[j][i] & 1);
 }
 
 int main(int argv, char** argc) {

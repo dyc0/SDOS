@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( DisplayImage )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( 4th_exec 4th_problem_OpenCV.cpp )
+target_link_libraries( 4th_exec ${OpenCV_LIBS} )
