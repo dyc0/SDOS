@@ -11,8 +11,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
-// #include <libexif/exif-data.h>  // <- TODO: see how to set up cmake
-// #include <libexif/exif-loader.h>
+//#include <libexif/exif-data.h>  // <- TODO: see how to set up cmake
 
 #define NUMCOLORS 12
 
