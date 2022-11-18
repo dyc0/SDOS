@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def draw_rectangle(dimx: int, dimy: int, rectx: int, recty: int) -> None:
-    if dimx < rectx or dimy < recty:
+    if dimx <= rectx or dimy <= recty:
         return np.zeros((dimx, dimy))
     
     frame = np.zeros((dimx, dimy))
@@ -13,7 +13,7 @@ def draw_rectangle(dimx: int, dimy: int, rectx: int, recty: int) -> None:
     return frame
 
 def draw_triangle(dimx: int, dimy: int, halfbase: int) -> None:
-    if dimx < 2*halfbase or dimy < 2*halfbase:
+    if dimx <= 2*halfbase or dimy <= 2*halfbase:
         return np.zeros((dimx, dimy))
 
     xx, yy = np.mgrid[-dimx//2:dimx//2, -dimy//2:dimy//2]
@@ -21,8 +21,8 @@ def draw_triangle(dimx: int, dimy: int, halfbase: int) -> None:
 
     return triangle
 
-def draw_circle(dimx:int , dimy: int, r: int) -> None:
-    if dimx//2 < r or dimy//2 < r:
+def draw_circle(dimx: int , dimy: int, r: int) -> None:
+    if dimx <= 2*r or dimy <= 2*r:
         return np.zeros((dimx, dimy))
 
     xx, yy = np.mgrid[-dimx//2:dimx//2, -dimy//2:dimy//2]
