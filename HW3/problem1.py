@@ -11,6 +11,19 @@ import HISTOGRAM_LIB as hl
 
 # This is not da Python wae:
 def get_histogram_full_8bit(img: cv2.Mat) -> list:
+    """Gets histogram for 8-bit image as an array.
+
+    Function uses previously implemented get_histogram to calculate
+    histogram, populates the histogram array with zeros where values
+    are missing.
+
+    Args:
+        img (cv2.Mat): A BGR or grayscale OpenCV image whose histogram is needed.
+
+    Returns:
+        list: A list of histograms for each channel.
+    """
+
     vals, hists = hl.get_histogram(img)
 
     newhists = []
@@ -22,16 +35,45 @@ def get_histogram_full_8bit(img: cv2.Mat) -> list:
     return newhists
 
 def cumulate_hist(hist: np.ndarray, numpx:int = -1) -> np.ndarray:
+    """Calculates the cumulative sum of a given histogram.
+
+    The sum is calculated for each histogram level l according to the
+    formula     sum[l] = sum[l-bit-1] + histogram[l]/numpx * 255.   It is
+    assumed that the image is 8-bit. If numpx is -1, then the number of
+    pixels is calculated as a sum of a histogram.
+
+    Args:
+        hist (np.ndarray): A histogram.
+        numpx (int, optional): Number of pixels in an image. Defaults to -1.
+
+    Returns:
+        np.ndarray: Cumulative sum of given histogram.
+    """
+
     # Suppose 8-bit one-channel
     sum = 0
     lut = np.zeros(256)
+    # If we do not pass the number of pixels explicitly:
     if numpx < 0: numpx = np.sum(hist)
+    
     for ind, val in enumerate(hist):
         sum += float(val)/numpx
         lut[ind] = int(sum*255)
     return lut.astype('uint8')
 
 def cumulate_multi_hist(hist: list, numpx:int = -1) -> np.ndarray:
+    """Calculates cumulative sums of multiple histograms using repeated
+    calls to cumulate_hist function.
+
+    Args:
+        hist (list): List of histograms
+        numpx (int, optional): Number of pixels in an image. Defaults to -1.
+
+    Returns:
+        np.ndarray: Stacked array of cumulative sums ready to be used
+        as a LUT.
+    """
+
     luts = []
     for hs in hist:
         luts.append(cumulate_hist(hs, numpx))
@@ -39,8 +81,20 @@ def cumulate_multi_hist(hist: list, numpx:int = -1) -> np.ndarray:
     return luts
 
 def apply_lut(img: cv2.Mat, lut:np.ndarray) -> cv2.Mat:
-    assert(len(img.shape) == len(lut.shape)) # TODO: Check if correct
+    """Function that applies a LUT to an image and returns a new one.
 
+    Args:
+        img (cv2.Mat): A BGR or grayscale OpenCV image.
+        lut (np.ndarray): LUT.
+
+    Returns:
+        cv2.Mat: New image with LUT applied.
+    """
+
+    # There must be LUT for each channel:
+    assert(len(img.shape) == len(lut.shape))
+
+    # BGR images:
     if len(img.shape) == 3:
         b,g,r = cv2.split(img)
         b_lut, g_lut, r_lut = np.split(lut, 3, axis=2)
@@ -48,6 +102,7 @@ def apply_lut(img: cv2.Mat, lut:np.ndarray) -> cv2.Mat:
         g_new = g_lut.flatten()[g]
         r_new = r_lut.flatten()[r]
         return cv2.merge((b_new, g_new, r_new))
+    # Grayscale images:
     elif len(img.shape) == 2:
         return lut[img]
     else:
