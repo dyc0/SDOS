@@ -1,3 +1,4 @@
+#! /usr/bin/python
 
 # Using PIL library
 
@@ -7,7 +8,7 @@ from matplotlib import pyplot as plt
 if __name__ == '__main__':
 
     # LOAD IMAGE
-    with (Image.open('MrBean.jpg') as img):
+    with (Image.open('../IMGS/INPUT/MrBean.jpg') as img):
 
         # SHOW IMAGE
         img.show()
@@ -27,7 +28,7 @@ if __name__ == '__main__':
 
         # SPLIT CHANNELS AND SAVE
         red, green, blue = img.split()
-        red.save('MrBean_red_channel.jpg')
+        red.save('../IMGS/OUTPUT/MrBean_red_channel.jpg')
 
         plt.figure()
 
@@ -43,16 +44,17 @@ if __name__ == '__main__':
         plt.imshow(blue, cmap='Blues_r')
         plt.title('BLUE')
 
-        plt.show()
-
         # INDEX IMAGE
-        index_img = img.quantize(colors=10)
-        index_img.convert('RGB').show()
-        index_img.save('MrBean_index_10.bmp')
+        index_img = img.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=8)
+        index_img.save('../IMGS/OUTPUT/MrBean_index.png')
+        plt.figure()
+        plt.imshow(index_img)
+        plt.title('INDEX')
 
         # FLIPPING
         flip_img = img.transpose(method=Image.Transpose.FLIP_LEFT_RIGHT)
         plt.figure()
         plt.imshow(flip_img)
         plt.title('FLIPPED AROUND Y-AXIS')
+
         plt.show()

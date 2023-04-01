@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 # HISTOGRAM IMPLEMENTATION
 
 from matplotlib import pyplot as plt
@@ -7,18 +9,18 @@ import cv2
 def bgr2grayscale (img: cv2.Mat) -> np.array:
     return np.asarray((114./1000*img[:,:,0] + 587./1000*img[:,:,1] + 299./1000*img[:,:,0]), dtype = int)
 
-# This is not da Python wae:
-#def get_histogram(img: np.array) -> np.array:
-#    # max 8-bit
-#    assert(np.max(img)<=255)
-#    assert(np.min(img)>=0)
 
-#    histogram = np.zeros(256)
-#    for val in np.nditer(img):
-#        histogram[val] += 1
-#    return histogram
+def get_histogram(img: cv2.Mat) -> tuple:
+    """A function for generating the histogram of a given image. Works on both single-channel and mulit-channel images.
 
-def get_histogram(img: cv2.Mat):
+    Args:
+        img (cv2.Mat): An image.
+
+    Returns:
+        tuple: A tuple of pixel values array and pixel counts per value array for single channel images.\
+               A tuple of arrays of values arrays and count arrays for multi channel images.
+    """
+
     # If image is grayscale:
     if len(img.shape) < 3: return np.unique(img, return_counts=True)
 
@@ -61,7 +63,7 @@ def plot_multi_histogram(vals: list, hists: list,
             plt.plot(val, hist)
 
 if __name__ == '__main__':
-    img = cv2.imread('MrBean.jpg')
+    img = cv2.imread('../IMGS/INPUT/MrBean.jpg')
     plt.figure()
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 

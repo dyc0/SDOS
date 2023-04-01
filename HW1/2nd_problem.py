@@ -1,8 +1,10 @@
-# VERSION WITHOUT LOOPS
+#! /usr/bin/python
 
 import numpy as np
 
 _DIMENSION = 1024
+
+# Resenje treceg problema je analogno.
 
 def iseven(I: np.matrix) -> None:
     return I % 2 == 0

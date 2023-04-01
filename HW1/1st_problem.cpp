@@ -1,5 +1,3 @@
-// VERSION WITH LOOPS
-
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -17,7 +15,6 @@ void isinteger (float* matrix[], bool* results[]) {
 
 int main(int argv, char** argc) {
 
-    // MATRIX GENERATION
     float* matrix[MATRIX_DIM];
     float* column;
     bool* results[MATRIX_DIM];
@@ -29,8 +26,6 @@ int main(int argv, char** argc) {
         matrix[i] = column; 
     }
         
-
-    // CHECKING FOR INTEGERS
     isinteger(matrix, results);
 
 #ifdef PRINTRESULTS

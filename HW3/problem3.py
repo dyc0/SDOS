@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -135,23 +137,27 @@ def print_parameters(img: cv2.Mat, title: str, plot_hist:bool = False):
     print("\n")
 
 if __name__ == "__main__":
-    img = cv2.imread('MrBean.jpg')
-
-    # 3.A - Histogram equalization, local, adaptive and global
-    img_pe = pixel_eq(img)
-    img_ae = adaptive_eq(img)
-    img_ge = cv2.LUT(img, cumulate_multi_hist(get_histogram_full_8bit(img)))
-
-    hl.show_image(img, title="Original image")
-    hl.show_image(img_pe, title="Pixel-histogram-eq")
-    hl.show_image(img_ae, title="Adaptive histogram eq")
-    hl.show_image(img_ge, title="Global histogram eq")
-
-    # 3.B Results comparison
     plot_hist = True
+
+    img = cv2.imread('../IMGS/INPUT/MrBean.jpg')
+    hl.show_image(img, title="Original image")
     print_parameters(img, "Original image", plot_hist)
+
+    # 3.A & B - Histogram equalization, local, adaptive and global, and comparison
+
+    ## LOCAL
+    img_pe = pixel_eq(img)
+    hl.show_image(img_pe, title="Pixel-histogram-eq")
     print_parameters(img_pe, "Pixel-histogram-eq", plot_hist)
+
+    ## ADAPTIVE
+    img_ae = adaptive_eq(img)
+    hl.show_image(img_ae, title="Adaptive histogram eq")
     print_parameters(img_ae, "Adaptive histogram eq", plot_hist)
+
+    ## GLOBAL
+    img_ge = cv2.LUT(img, cumulate_multi_hist(get_histogram_full_8bit(img)))   
+    hl.show_image(img_ge, title="Global histogram eq")
     print_parameters(img_ge, "Global histogram eq", plot_hist)
 
     plt.show()

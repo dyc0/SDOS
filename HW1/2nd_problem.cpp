@@ -1,5 +1,3 @@
-// VERSION WITH LOOPS
-
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -8,15 +6,15 @@
 #define PRINTRESULTS
 
 void iseven (int* matrix[], bool* results[]) {
-    // Loop order is important when matrices get big.
+    // Redosled for petlji je vazan za brzinu
     for (int j = 0; j < MATRIX_DIM; j++)
         for (int i = 0; i < MATRIX_DIM; i++)
             results[j][i] = !(matrix[j][i] & 1);
 }
 
-int main(int argv, char** argc) {
+// isodd se dobija kao !iseven
 
-    // MATRIX GENERATION
+int main(int argv, char** argc) {
     int* matrix[MATRIX_DIM];
     int* column;
     bool* results[MATRIX_DIM];
@@ -27,9 +25,7 @@ int main(int argv, char** argc) {
             column[j] = std::rand() / (static_cast <float> (RAND_MAX/10));
         matrix[i] = column; 
     }
-        
 
-    // CHECKING FOR INTEGERS
     iseven(matrix, results);
 
 #ifdef PRINTRESULTS

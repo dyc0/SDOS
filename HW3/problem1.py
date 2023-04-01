@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 '''
 These are actually hws 3/1 and 3/2.
 '''
@@ -116,7 +118,7 @@ def gama_transform(gamma:float = 1, c:float = 1) -> float:
 
 
 if __name__ == '__main__':
-    img = cv2.imread('MrBean.jpg')
+    img = cv2.imread('../IMGS/INPUT/MrBean.jpg')
 
     plt.figure()
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -138,7 +140,7 @@ if __name__ == '__main__':
     hl.plot_multi_histogram(vals_cv, hists_cv, title='Equalized histogram, OpenCV')
 
     # PROBLEM 1b
-    img_ue = cv2.imread('MrBean_UE.jpg')
+    img_ue = cv2.imread('../IMGS/INPUT/MrBean_UE.jpg')
     vals_ue, hist_ue = hl.get_histogram(hl.normalize01(img_ue))
     hl.plot_multi_histogram(vals_ue, hist_ue, title='Underexposed')
     hl.show_image(img_ue, title='Underexposed')
