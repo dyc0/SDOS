@@ -1,41 +1,60 @@
 #! /usr/bin/python
 
-import cv2
 import numpy as np
+import cv2
 from matplotlib import pyplot as plt
+from numpy.fft import fftshift
+from scipy import ndimage
+from HISTOGRAM_LIB import show_image 
 
-def ideal_highpass(img, size):
-    h, w   = img.shape[0:2]
-    h1, w1 = int(h/2), int(w/2)
-    img[h1-int(size/2):h1+int(size/2), w1-int(size/2):w1+int(size/2)] = 0
-    return img
+if __name__ == "__main__":
 
-def inverse_transform_image(dft_img):
-    idft_shift = np.fft.ifftshift(dft_img)
-    return np.abs(np.fft.ifft2(idft_shift))
-
-
-if __name__ == '__main__':
-
-    # Import image and convert to grayscale
     img = cv2.imread('../IMGS/INPUT/MrBean.jpg')
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Fourier transform
-    img_dft = np.fft.fft2(img)
-    dft_shift = np.fft.fftshift(img_dft)
+    fft_img = np.fft.fft2(img)
+    fshift = np.fft.fftshift(fft_img)
 
-    # High-pass filter
-    dft_shift = ideal_highpass(dft_shift, 25)
-    res = np.log(np.abs(dft_shift))
+    rows, cols = img.shape
+    crow, ccol = rows // 2, cols // 2  # center coordinates
 
-    # Inverse Fourier transform
-    idft = inverse_transform_image(dft_shift)
-    
-    plt.figure()
-    plt.imshow(idft, cmap='gray')
-    plt.title('Highpass')
+    x = np.linspace(-ccol, ccol - 1, cols)
+    y = np.linspace(-crow, crow - 1, rows)
+    X, Y = np.meshgrid(x, y)
+    dist = np.sqrt(X**2 + Y**2)
+
+    cutoff_freq = 10
+
+    # A. SEPARABLE FILTER
+    separable_filter = np.double((X > cutoff_freq) | (Y > cutoff_freq))
+
+    # B. CIRCULAR FILTER
+    circular_filter = np.zeros((rows, cols))
+    circular_filter[dist > cutoff_freq] = 1
+
+    # C. PREWITT FILTER - SPACIAL DOMAIN
+    spacial_prewitt_filtered = ndimage.prewitt(img)
+    show_image(spacial_prewitt_filtered, title="Spacial PREWITT filter")
+    show_image(cv2.Canny(spacial_prewitt_filtered, threshold1=30, threshold2=100), title="Spacial PREWITT edges")
+
+    # D. PREWITT FILTER - FREQ DOMAIN
+    prewitt_filter = np.zeros((rows, cols))
+    prewitt_filter[crow-1:crow+2, ccol-1:ccol+2] = np.array([[1, 0, -1], [1, 0, -1], [1, 0, -1]])
+    prewitt_filter=np.fft.fftshift(np.fft.fft2(prewitt_filter))
 
 
+
+    for imgfilter, title in zip([separable_filter, circular_filter, prewitt_filter], ["SEPARABLE FILTER", "CIRCULAR FILTER", "PREWITT FILTER"]):
+        filtered_image = fshift * imgfilter
+
+        filtered_image_shift = np.fft.ifftshift(filtered_image)
+        filtered_image_inverse = np.fft.ifft2(filtered_image_shift)
+        filtered_image_inverse = np.abs(filtered_image_inverse)  # Take the absolute value
+        filtered_image_inverse = filtered_image_inverse.astype(np.uint8)
+        
+        edge_image = cv2.Canny(filtered_image_inverse, threshold1=30, threshold2=100)
+
+        show_image(filtered_image_inverse, title=title)
+        show_image(edge_image, title=title+", edges")
 
     plt.show()
